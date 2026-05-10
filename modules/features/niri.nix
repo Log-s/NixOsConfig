@@ -87,11 +87,19 @@
           "Mod+K".focus-window-up = _: {};
           "Mod+J".focus-window-down = _: {};
 
+          # Monitor focus
+          "Mod+M".focus-monitor-right = _: {};
+          "Mod+G".focus-monitor-left = _: {};
+
           # Move windows
           "Mod+Shift+H".move-column-left = _: {};
           "Mod+Shift+L".move-column-right = _: {};
           "Mod+Shift+K".move-window-up-or-to-workspace-up = _: {};
           "Mod+Shift+J".move-window-down-or-to-workspace-down = _: {};
+
+          # Move window to monitor
+          "Mod+Shift+M".move-column-to-monitor-right = _: {};
+          "Mod+Shift+G".move-column-to-monitor-left = _: {};
 
           # Workspaces — AZERTY unshifted number row
           "Mod+ampersand".focus-workspace = 1;
