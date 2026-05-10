@@ -6,7 +6,7 @@
     boot.loader.efi.canTouchEfiVariables = true;
 
     boot.initrd.availableKernelModules = [
-      "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"
+      "xhci_pci" "ahci" "thunderbolt" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"
     ];
     boot.initrd.kernelModules = [ "dm-snapshot" ];
     boot.kernelModules = [ "kvm-intel" "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
@@ -39,12 +39,12 @@
 
     # ── Filesystems ───────────────────────────────────────────────────────
     fileSystems."/" = {
-      device = "/dev/disk/by-uuid/REPLACE-WITH-YOUR-ROOT-UUID"; # FIXME
+      device = "/dev/disk/by-uuid/fd05a055-0350-4df1-bcf1-db15324a45ed"; # FIXME
       fsType = "ext4";
     };
 
     fileSystems."/boot" = {
-      device = "/dev/disk/by-uuid/REPLACE-WITH-YOUR-EFI-UUID"; # FIXME
+      device = "/dev/disk/by-uuid/E9E0-18EC"; # FIXME
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };

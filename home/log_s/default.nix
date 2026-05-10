@@ -14,6 +14,7 @@
     ./helix.nix
     ./nvim.nix
     ./xdg.nix
+    ./git.nix
   ];
 
   home.username    = "log_s";

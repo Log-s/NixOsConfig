@@ -42,6 +42,7 @@ in {
         "editor.minimap.enabled"   = false;
         "workbench.colorTheme"     = "Catppuccin Frappé";
         "telemetry.telemetryLevel" = "off";
+        "workbench.startupEditor"  = "none";
       };
     };
   };

@@ -8,7 +8,7 @@
 
     environment.systemPackages = with pkgs; [
       # Core tools
-      git gnupg curl wget zip unzip fontconfig file xxd jq
+      gnupg curl wget zip unzip fontconfig file xxd jq
       imagemagick wl-clipboard
 
       # Shells & terminal (alacritty installed by home-manager)
@@ -24,9 +24,8 @@
       gcc gnumake libclang
       nodejs typescript-language-server vue-language-server
 
-
       # Productivity & search
-      fzf ripgrep fd luarocks sqlite
+      fzf ripgrep fd luarocks sqlite claude-code
 
       # Security / pentesting
       tcpdump sqlmap hashcat python3Packages.impacket mitmproxy proxychains-ng

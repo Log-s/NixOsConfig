@@ -64,9 +64,10 @@ sudo nixos-rebuild switch --flake .#main --show-trace
 # Update all flake inputs
 nix flake update
 
-# Build just the custom niri or noctalia package
-nix build .#myNiri
-nix build .#myNoctalia
+# List and delete old generations
+nixos-rebuild list-generations # list
+sudo nix-collect-garbage -d # remove old generations
+sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
 ```
 
 ## Project structure
