@@ -80,8 +80,16 @@
     services.gnome.evolution-data-server.enable = true;
 
     # ── Qt theming ────────────────────────────────────────────────────────
-    # qt6ct reads this env var to know it should manage Qt theming.
     environment.sessionVariables.QT_QPA_PLATFORMTHEME = "qt6ct";
+
+    # ── NVIDIA + Wayland ──────────────────────────────────────────────────
+    # niri (smithay-based) needs GBM from the NVIDIA stack, not Mesa's stub.
+    environment.sessionVariables = {
+      GBM_BACKEND          = "nvidia-drm";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      LIBVA_DRIVER_NAME    = "nvidia";
+      NVD_BACKEND          = "direct"; # nvdec VA-API backend
+    };
 
     # ── Podman container registries ───────────────────────────────────────
     virtualisation.containers.registries.search = [ "docker.io" ];

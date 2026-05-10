@@ -12,7 +12,7 @@
         config_kdl="${config.programs.niri.package}/niri-config.kdl"
         if [ -f "$config_kdl" ]; then
           mkdir -p /home/log_s/.config/niri
-          chown log_s:users /home/log_s/.config/niri
+          chown -R log_s:users /home/log_s/.config/
           chmod 755 /home/log_s/.config/niri
           # Remove a stale symlink left by a previous ln -sf activation;
           # without this the shell follows the symlink into the read-only
