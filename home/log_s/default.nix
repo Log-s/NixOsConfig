@@ -15,6 +15,7 @@
     ./nvim.nix
     ./xdg.nix
     ./git.nix
+    ./kanshi.nix
   ];
 
   home.username    = "log_s";

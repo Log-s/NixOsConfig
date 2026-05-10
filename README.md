@@ -110,6 +110,7 @@ sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
         ├── nvim.nix                   # Neovim: deploys init.lua + lua/ config (lazy.nvim manages plugins)
         ├── nvim/                      # Neovim config source (init.lua + lua/ tree)
         ├── git.nix                    # Git: user identity, defaultBranch=main, pull.rebase
+        ├── kanshi.nix                 # Kanshi: output profiles (laptop-only, dual-1080p, mixed-external)
         ├── ssh.nix                    # SSH: GitHub match-block (git@github.com → id_ed25519)
         ├── tools.nix                  # Git-clones pentesting tools + pipx installs into ~/Tools/
         └── xdg.nix                    # XDG user dirs, home cleanup, caido desktop entry fix

@@ -9,7 +9,7 @@
     environment.systemPackages = with pkgs; [
       # Core tools
       gnupg curl wget zip unzip fontconfig file xxd jq
-      imagemagick wl-clipboard
+      imagemagick wl-clipboard wdisplays
 
       # Shells & terminal (alacritty installed by home-manager)
       zsh
