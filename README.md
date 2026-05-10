@@ -11,7 +11,7 @@ workflow after the first boot.
 
 ```bash
 nix-shell -p git
-git clone https://github.com/<username>/NixOsConfig ~/NixOsConfig
+git clone https://github.com/Log-s/NixOsConfig ~/NixOsConfig
 ```
 
 ### 2. Update hardware.nix with your actual partition UUIDs
