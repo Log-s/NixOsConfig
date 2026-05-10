@@ -76,6 +76,8 @@ sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
 .
 ├── flake.nix                          # Entry point — inputs and flake-parts wiring
 ├── assets/
+│   ├── extensions/                    # Offline VSIX extensions bundled into the repo
+│   │   └── yassh.copy-with-line-numbers-0.0.4.vsix
 │   └── wallpapers/                    # Wallpaper images deployed to ~/Pictures/Wallpapers via home.file
 ├── modules/                           # Auto-loaded by import-tree as flake-parts modules
 │   ├── parts.nix                      # Supported systems (x86_64-linux, aarch64-linux, …)
@@ -107,6 +109,8 @@ sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
         ├── helix.nix                  # Helix: noctalia_dracula custom theme (Dracula palette)
         ├── nvim.nix                   # Neovim: deploys init.lua + lua/ config (lazy.nvim manages plugins)
         ├── nvim/                      # Neovim config source (init.lua + lua/ tree)
+        ├── git.nix                    # Git: user identity, defaultBranch=main, pull.rebase
+        ├── ssh.nix                    # SSH: GitHub match-block (git@github.com → id_ed25519)
         ├── tools.nix                  # Git-clones pentesting tools + pipx installs into ~/Tools/
         └── xdg.nix                    # XDG user dirs, home cleanup, caido desktop entry fix
 ```
