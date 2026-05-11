@@ -150,6 +150,9 @@
           # Noctalia
           "Mod+C".spawn-sh = "${lib.getExe self'.packages.myNoctalia} ipc call settings toggle";
 
+          # Overview
+          "Mod+A".toggle-overview = _: {};
+
           # Session
           "Mod+Shift+Q".close-window = _: {};
           "Mod+Tab".spawn-sh = "${lib.getExe self'.packages.myNoctalia} ipc call launcher windows";
