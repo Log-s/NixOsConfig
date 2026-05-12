@@ -38,7 +38,7 @@ Nix will build the full system from the flake and activate it. Home-manager runs
 same build and deploys all dotfiles. Log out and back in (or reboot) to pick up the new shell,
 niri session, and noctalia.
 
-### 4. Post-install theming steps (manual, one-time)
+### 4. Post-install steps (manual, one-time)
 
 These cannot be automated via Nix:
 - Switch color scheme once in Noctalia → triggers theme writes for all templates (Alacritty, Vesktop, …)
@@ -48,6 +48,7 @@ These cannot be automated via Nix:
   2. Switch Noctalia themes to force a write
   3. Vesktop Settings → Themes → select the Noctalia theme
 - Firefox → pywalfox extension → "Fetch Pywal colors"
+- Obsidian: launch, open `~/.obsidian/Vaults` as vault, configure plugins manually
 
 ## Day-to-day commands
 
@@ -66,7 +67,8 @@ nix flake update
 
 # List and delete old generations
 nixos-rebuild list-generations # list
-sudo nix-collect-garbage -d # remove old generations
+sudo nix-collect-garbage -d # remove all old generations
+sudo nix-collect-garbage  --delete-generations 1 2 3 # remove specific generations
 sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
 ```
 

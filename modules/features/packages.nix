@@ -36,7 +36,7 @@
       pywalfox-native
 
       # Browser & apps
-      vesktop signal-desktop
+      vesktop signal-desktop obsidian
 
       # Wayland desktop
       brightnessctl cliphist wlsunset
