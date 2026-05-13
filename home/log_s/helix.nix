@@ -3,6 +3,7 @@
     enable = true;
 
     settings.theme = "noctalia_dracula";
+    settings.editor.line-number = "relative";
 
     themes.noctalia_dracula = {
       # ── UI ──────────────────────────────────────────────────────────────────
