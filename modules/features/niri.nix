@@ -162,6 +162,9 @@
           "Mod+Shift+B".spawn-sh = "${pkgs.zenity}/bin/zenity --question --title='Reboot' --text='Reboot the system?' --default-cancel && systemctl reboot";
           "Mod+Shift+X".quit = _: {};
 
+          # Screen freeze
+          "Mod+Z".spawn-sh = "${pkgs.wl-mirror}/bin/wl-present toggle-freeze";
+
           # Screenshots
           "Print".screenshot = _: {};
           "Ctrl+Print".screenshot-screen = _: {};
