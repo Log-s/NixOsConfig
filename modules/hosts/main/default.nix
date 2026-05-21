@@ -6,7 +6,7 @@
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.backupFileExtension = "backup";
+        home-manager.backupCommand = "mv \"$FILE\" \"$FILE.$(date +%Y%m%d%H%M%S).backup\"";
         home-manager.extraSpecialArgs = { inherit inputs self; };
         home-manager.users.log_s = import ../../../home/log_s;
       }
