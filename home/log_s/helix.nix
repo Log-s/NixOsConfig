@@ -5,6 +5,23 @@
     settings.theme = "noctalia_dracula";
     settings.editor.line-number = "relative";
 
+    languages.language-server.basedpyright = {
+      command = "basedpyright-langserver";
+      args = [ "--stdio" ];
+    };
+
+    languages.language-server.ruff = {
+      command = "ruff";
+      args = [ "server" ];
+    };
+
+    languages.language = [{
+      name = "python";
+      language-servers = [ "basedpyright" "ruff" ];
+      formatter = { command = "ruff"; args = [ "format" "-" ]; };
+      auto-format = true;
+    }];
+
     themes.noctalia_dracula = {
       # ── UI ──────────────────────────────────────────────────────────────────
       "ui.background"           = { bg = "background"; };

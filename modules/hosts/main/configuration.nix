@@ -7,6 +7,7 @@
       self.nixosModules.packages
       self.nixosModules.shell
       self.nixosModules.libvirt
+      self.nixosModules.hosts
     ];
 
     system.stateVersion = "25.11";
@@ -63,6 +64,9 @@
         PermitRootLogin        = "no";
       };
     };
+
+    # Disabled to allow inbound reverse-shell callbacks on arbitrary ports.
+    networking.firewall.enable = false;
 
     # ── Noctalia requirements ─────────────────────────────────────────────
     networking.networkmanager.enable   = true;

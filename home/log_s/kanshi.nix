@@ -7,7 +7,7 @@
         profile = {
           name = "laptop-only";
           outputs = [
-            { criteria = "eDP-1"; status = "enable"; mode = "2560x1440@60"; }
+            { criteria = "eDP-1"; status = "enable"; mode = "3840x2160@59.997"; }
           ];
         };
       }

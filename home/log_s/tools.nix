@@ -15,9 +15,9 @@
     }
 
     clone_if_missing "$HOME/Tools/ad/krbrelayx"      "https://github.com/dirkjanm/krbrelayx"
-    clone_if_missing "$HOME/Tools/ad/Responder"       "https://github.com/lgandx/Responder"
     clone_if_missing "$HOME/Tools/ad/impacket"        "https://github.com/fortra/impacket"
     clone_if_missing "$HOME/Tools/code/semgrep-rules" "https://github.com/semgrep/semgrep-rules"
+    clone_if_missing "$HOME/Tools/web/SecLists"       "https://github.com/danielmiessler/SecLists"
   '';
 
   # Install pipx-based tools into isolated virtualenvs under ~/.local/share/pipx/.
@@ -36,5 +36,6 @@
     # generic Linux binary (osemgrep) that NixOS's dynamic linker cannot run.
     pipx_install_if_missing impacket
     pipx_install_if_missing dockerhound
+    pipx_install_if_missing certipy-ad
   '';
 }
