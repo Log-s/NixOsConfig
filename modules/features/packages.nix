@@ -40,7 +40,7 @@
       fzf ripgrep fd luarocks sqlite claude-code
 
       # Security / pentesting
-      tcpdump sqlmap hashcat python3Packages.impacket mitmproxy proxychains-ng
+      tcpdump sqlmap hashcat john python3Packages.impacket mitmproxy proxychains-ng
       nmap burpsuite bruno semgrep wpscan binwalk wireshark
       caido-cli caido-desktop ffuf feroxbuster rlwrap ldeep netexec responder
       # GNU netcat (supports -e for reverse shells). hiPrio so its `nc`

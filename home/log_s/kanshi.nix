@@ -2,12 +2,14 @@
   services.kanshi = {
     enable = true;
     settings = [
-      # Laptop only — eDP-1 at full resolution
+      # Laptop only — eDP-1 forced to 1920x1080 @ scale 1.
+      # The panel's EDID only advertises 4K, so we need `--custom` to tell
+      # kanshi/niri to create a custom mode rather than pick one from the list.
       {
         profile = {
           name = "laptop-only";
           outputs = [
-            { criteria = "eDP-1"; status = "enable"; mode = "3840x2160@59.997"; }
+            { criteria = "eDP-1"; status = "enable"; mode = "--custom 1920x1080@60Hz"; scale = 1.0; }
           ];
         };
       }
