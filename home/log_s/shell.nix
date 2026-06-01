@@ -17,8 +17,10 @@
       alias tmp="cd ~/Downloads"
 
       export EDITOR=vim
+      export GOPATH="$HOME/Tools/go"
       export PATH="$HOME/.cargo/bin:$PATH"
       export PATH="$HOME/.local/bin:$PATH"
+      export PATH="$GOPATH/bin:$PATH"
     '';
   };
 }

@@ -22,7 +22,8 @@
       # Core tools
       gnupg curl wget zip unzip fontconfig file xxd jq tree
       imagemagick wl-clipboard wdisplays openvpn wl-mirror
-
+      glib glibc
+      
       # Shells & terminal (alacritty installed by home-manager)
       zsh
 
@@ -53,6 +54,9 @@
 
       # Browser & apps
       vesktop signal-desktop obsidian
+      # chromium is used headlessly by httpx (-system-chrome) for screenshots;
+      # the go-rod tarball it would otherwise download is not linked for NixOS.
+      chromium
 
       # Wayland desktop
       brightnessctl cliphist wlsunset
