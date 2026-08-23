@@ -34,6 +34,7 @@
       go ruby
       rustup rust-analyzer
       python3 python313Packages.ruff basedpyright
+      mkdocs python313Packages.mkdocs-material
       gcc gnumake libclang
       nodejs typescript-language-server vue-language-server
 
