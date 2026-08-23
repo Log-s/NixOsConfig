@@ -11,6 +11,26 @@
       mkdir -p $out/share/pwnfox
       cp ${pwnfox-jar} $out/share/pwnfox/PwnFox.jar
     '';
+    # mkdocs-static-i18n isn't in nixpkgs; the homelab wiki needs it for its
+    # FR/EN bilingual setup, so package it from PyPI directly.
+    mkdocs-static-i18n = pkgs.python313Packages.buildPythonPackage {
+      pname   = "mkdocs-static-i18n";
+      version = "1.3.1";
+      format  = "wheel";
+      src = pkgs.fetchurl {
+        url    = "https://files.pythonhosted.org/packages/6a/0b/43ff4afb6b438d47718b1959a22075ed95d8460d8c47381878b37a40de63/mkdocs_static_i18n-1.3.1-py3-none-any.whl";
+        sha256 = "sha256-QDbiR5WhUMnE1LAB7SSkOuwBM192GI2+Wl2PtKJ+umU=";
+      };
+      propagatedBuildInputs = [ pkgs.python313Packages.mkdocs ];
+    };
+    # mkdocs and its plugins must share one Python environment so the
+    # mkdocs binary can actually import them — as separate top-level
+    # packages each gets its own isolated site-packages.
+    mkdocs-with-material = pkgs.python313.withPackages (ps: [
+      ps.mkdocs
+      ps.mkdocs-material
+      mkdocs-static-i18n
+    ]);
   in {
     nixpkgs.config.allowUnfree = true;
 
@@ -34,7 +54,7 @@
       go ruby
       rustup rust-analyzer
       python3 python313Packages.ruff basedpyright
-      mkdocs python313Packages.mkdocs-material
+      mkdocs-with-material
       gcc gnumake libclang
       nodejs typescript-language-server vue-language-server
 
