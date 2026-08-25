@@ -1,0 +1,174 @@
+# Noctalia v5 configuration.
+#
+# Ported from the v4 settings.json — v5 is a full rewrite (native Wayland/GL,
+# no Quickshell) and does NOT migrate v4 settings, so this file was rebuilt by
+# hand against the v5 schema. Everything not listed here stays at its v5
+# default; run `noctalia config export full` to dump the complete effective
+# config, and `noctalia config validate <path>` to check a change.
+#
+# This file is deployed read-only from the nix store by programs.noctalia in
+# home/log_s/noctalia.nix, so the Settings GUI cannot write back to it: change
+# settings here, not in the GUI.
+
+# ── Shell ─────────────────────────────────────────────────────────────────────
+
+[shell]
+avatar_path            = "/home/log_s/.face"
+font_family            = "JetBrainsMono Nerd Font"
+telemetry_enabled      = false
+settings_show_advanced = true
+
+[shell.launcher]
+categories    = true
+sort_by_usage = true
+
+# v4 had panelsAttachedToBar = true / settingsPanelMode = "attached"; v5 splits
+# that into one placement per panel and defaults launcher/clipboard to floating.
+# The control center is the exception: floating detaches it from the bar so it
+# opens as its own centered panel.
+[shell.panel]
+launcher_placement       = "attached"
+clipboard_placement      = "attached"
+control_center_placement = "floating"
+wallpaper_placement      = "attached"
+session_placement        = "attached"
+
+[shell.shadow]
+direction = "down_right"
+
+# ── Theme ─────────────────────────────────────────────────────────────────────
+
+[theme]
+mode   = "dark"
+source = "wallpaper"
+
+# Palette generated from the current wallpaper. vibrant keeps the wallpaper's
+# saturation instead of folding it into a Material tonal palette; the other
+# choices are m3-tonal-spot, m3-content, m3-fruit-salad, m3-rainbow,
+# m3-monochrome, faithful, dysfunctional and muted. Regenerating on a wallpaper
+# change also re-runs every template below, so themed apps follow the wallpaper
+# too.
+wallpaper_scheme = "vibrant"
+
+# Inactive while source = "wallpaper"; kept as the palette to fall back on if
+# source is ever switched back to "builtin".
+builtin = "Dracula"
+
+# Every template listed here is re-rendered from the palette whenever the
+# wallpaper changes, so these apps track the wallpaper colors.
+#
+# v4 active templates were: alacritty, gtk, btop, discord, spicetify, qt,
+# pywalfox, vscode, niri. v5 splits gtk into gtk3/gtk4 and moves discord,
+# spicetify, pywalfox and vscode out to the community catalog, which noctalia
+# fetches and caches under ~/.local/state/noctalia/community-templates.
+# `noctalia theme --list-templates` prints everything available.
+[theme.templates]
+enable_builtin_templates = true
+builtin_ids              = [ "alacritty", "gtk3", "gtk4", "qt", "btop", "niri", "helix" ]
+
+# helix replaces the hand-written noctalia_dracula theme that home/log_s/helix.nix
+# used to define; it writes ~/.config/helix/themes/noctalia.toml.
+
+enable_community_templates = true
+
+# discord covers vesktop too — the template writes
+# ~/.config/vesktop/themes/noctalia.theme.css (and equivalents for webcord,
+# legcord, equibop, vencord, betterdiscord), so there is no reason to swap
+# vesktop out for the official Discord client.
+community_ids = [ "discord", "spicetify", "pywalfox", "obsidian" ]
+
+# ── Wallpaper ─────────────────────────────────────────────────────────────────
+
+[wallpaper]
+enabled               = true
+directory             = "~/Pictures/Wallpapers"
+fill_mode             = "crop"
+transition            = [ "fade", "disc", "stripes", "wipe", "honeycomb" ]
+transition_duration   = 1500
+edge_smoothness       = 0.05
+transition_on_startup = true
+
+[wallpaper.automation]
+enabled = false
+
+# ── Bar ───────────────────────────────────────────────────────────────────────
+
+[bar.main]
+font_family        = "JetBrainsMono Nerd Font"
+position           = "top"
+background_opacity = 0.93
+radius             = 12
+widget_spacing     = 6
+margin_edge        = 4
+margin_ends        = 4
+capsule            = true
+
+# v4 left/center/right → v5 start/center/end.
+# The v4 SystemMonitor widget bundled several stats; in v5 each stat is its own
+# sysmon instance (cpu/ram/temp are predefined instances of type "sysmon").
+# The v4 VPN widget is gone — VPN state is reported by the network widget.
+start  = [ "clock", "cpu", "ram", "temp", "active_window", "media" ]
+center = [ "workspaces" ]
+end    = [ "network", "tray", "notifications", "battery", "volume", "brightness", "control-center" ]
+
+# v4 clockFormat "hh\nmm" (two-line, hours over minutes).
+[widget.clock]
+format = "{:%H}\n{:%M}"
+
+[widget.network]
+vpn_status = "both"
+
+# ── Notifications / OSD ───────────────────────────────────────────────────────
+
+[notification]
+enable_daemon = true
+position      = "top_right"
+
+[osd]
+enabled  = true
+position = "top_right"
+
+# ── Location / Weather / Calendar ─────────────────────────────────────────────
+
+[location]
+auto_locate = false
+address     = "Nanterre"
+
+[weather]
+enabled = true
+unit    = "metric"
+effects = true
+
+[calendar]
+enabled = true
+
+# ── System monitor thresholds ─────────────────────────────────────────────────
+# v4 used warning/critical pairs at 80/90; v5 calls them activity/critical.
+
+[system.monitor]
+cpu_usage_activity_threshold = 80.0
+cpu_usage_critical_threshold = 90.0
+cpu_temp_activity_threshold  = 80.0
+cpu_temp_critical_threshold  = 90.0
+ram_pct_activity_threshold   = 80.0
+ram_pct_critical_threshold   = 90.0
+
+[battery]
+warning_threshold = 20
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+
+[audio]
+enable_overdrive = false
+
+[brightness]
+enable_ddcutil = false
+
+[nightlight]
+enabled = false
+
+[dock]
+enabled = false
+
+[desktop_widgets]
+enabled = false

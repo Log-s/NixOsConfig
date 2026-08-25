@@ -6,7 +6,8 @@
     };
 
     # Symlink the wrapper-modules-generated config.kdl into ~/.config/niri/
-    # so noctalia's keybind-cheatsheet plugin can find and parse it.
+    # so niri's own `niri validate` and anything else reading the user config
+    # (e.g. noctalia's niri color template) sees the active binds.
     system.activationScripts.niriConfigLink = {
       text = ''
         config_kdl="${config.programs.niri.package}/niri-config.kdl"
@@ -20,7 +21,7 @@
           [ -L /home/log_s/.config/niri/config.kdl ] && \
             rm /home/log_s/.config/niri/config.kdl
           # wrapper-modules quotes all KDL identifiers (e.g. "binds", "Mod+H").
-          # noctalia's keybind-cheatsheet expects bare identifiers — strip the
+          # Readers of the user config expect bare identifiers — strip the
           # leading quotes from node names while leaving string values intact.
           ${pkgs.gnused}/bin/sed -E 's/^([[:space:]]*)"([^"]+)"/\1\2/' "$config_kdl" \
             > /home/log_s/.config/niri/config.kdl
@@ -144,19 +145,18 @@
           "Mod+Return".spawn-sh = lib.getExe pkgs.alacritty;
           "Mod+Shift+Return".spawn-sh = lib.getExe pkgs.firefox;
           "Mod+Shift+N".spawn-sh = lib.getExe pkgs.nautilus;
-          "Mod+Shift+comma".spawn-sh = "${lib.getExe self'.packages.myNoctalia} ipc call plugin:keybind-cheatsheet toggle";
-          "Mod+Space".spawn-sh = "${lib.getExe self'.packages.myNoctalia} ipc call launcher toggle";
+          "Mod+Space".spawn-sh = "${lib.getExe self'.packages.myNoctalia} msg panel-toggle launcher";
 
           # Noctalia
-          "Mod+C".spawn-sh = "${lib.getExe self'.packages.myNoctalia} ipc call settings toggle";
+          "Mod+C".spawn-sh = "${lib.getExe self'.packages.myNoctalia} msg settings-toggle";
 
           # Overview
           "Mod+A".toggle-overview = _: {};
 
           # Session
           "Mod+Shift+Q".close-window = _: {};
-          "Mod+Tab".spawn-sh = "${lib.getExe self'.packages.myNoctalia} ipc call launcher windows";
-          "Mod+Escape".spawn-sh = "${lib.getExe self'.packages.myNoctalia} ipc call lockScreen lock";
+          "Mod+Tab".spawn-sh = "${lib.getExe self'.packages.myNoctalia} msg window-switcher";
+          "Mod+Escape".spawn-sh = "${lib.getExe self'.packages.myNoctalia} msg lock";
           "Mod+Shift+S".spawn-sh = "${pkgs.zenity}/bin/zenity --question --title='Suspend' --text='Suspend the system?' --default-cancel && systemctl suspend";
           "Mod+Shift+P".spawn-sh = "${pkgs.zenity}/bin/zenity --question --title='Power off' --text='Shut down the system?' --default-cancel && systemctl poweroff";
           "Mod+Shift+B".spawn-sh = "${pkgs.zenity}/bin/zenity --question --title='Reboot' --text='Reboot the system?' --default-cancel && systemctl reboot";
@@ -171,12 +171,12 @@
           "Alt+Print".screenshot-window = _: {};
 
           # Media keys (allow-when-locked not supported by wrapper-modules — add via hotfix later)
-          "XF86AudioRaiseVolume".spawn-sh  = "${lib.getExe self'.packages.myNoctalia} ipc call volume increase";
-          "XF86AudioLowerVolume".spawn-sh  = "${lib.getExe self'.packages.myNoctalia} ipc call volume decrease";
-          "XF86AudioMute".spawn-sh         = "${lib.getExe self'.packages.myNoctalia} ipc call volume muteOutput";
-          "XF86AudioMicMute".spawn-sh      = "${lib.getExe self'.packages.myNoctalia} ipc call volume muteMic";
-          "XF86MonBrightnessUp".spawn-sh   = "${lib.getExe self'.packages.myNoctalia} ipc call brightness increase";
-          "XF86MonBrightnessDown".spawn-sh = "${lib.getExe self'.packages.myNoctalia} ipc call brightness decrease";
+          "XF86AudioRaiseVolume".spawn-sh  = "${lib.getExe self'.packages.myNoctalia} msg volume-up";
+          "XF86AudioLowerVolume".spawn-sh  = "${lib.getExe self'.packages.myNoctalia} msg volume-down";
+          "XF86AudioMute".spawn-sh         = "${lib.getExe self'.packages.myNoctalia} msg volume-mute";
+          "XF86AudioMicMute".spawn-sh      = "${lib.getExe self'.packages.myNoctalia} msg mic-mute";
+          "XF86MonBrightnessUp".spawn-sh   = "${lib.getExe self'.packages.myNoctalia} msg brightness-up";
+          "XF86MonBrightnessDown".spawn-sh = "${lib.getExe self'.packages.myNoctalia} msg brightness-down";
         };
       };
     };

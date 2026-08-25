@@ -90,8 +90,7 @@ sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
 │   │   ├── shell.nix                  # System-level zsh (registers it in /etc/shells)
 │   │   ├── libvirt.nix                # KVM/QEMU: libvirtd, virt-manager, nat-net + host-only networks
 │   │   └── noctalia/
-│   │       ├── settings.json          # Noctalia settings (wallpaper, avatar, templates, …)
-│   │       └── plugins.json           # Noctalia plugins list
+│   │       └── config.toml            # Noctalia v5 settings (bar, theme, wallpaper, templates, …)
 │   └── hosts/
 │       └── main/
 │           ├── default.nix            # Builds nixosConfigurations.main, wires home-manager
@@ -103,7 +102,7 @@ sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
         ├── shell.nix                  # Zsh user config: oh-my-zsh, aliases, fzf integration
         ├── alacritty.nix              # Alacritty: font only (colors from noctalia template)
         ├── tmux.nix                   # Tmux: vi mode, Ctrl+S prefix, wl-clipboard integration
-        ├── noctalia.nix               # Noctalia home-manager module (settings + plugins from JSON)
+        ├── noctalia.nix               # Noctalia home-manager module (settings from config.toml)
         ├── gtk.nix                    # GTK/Qt theming: adw-gtk3-dark, Adwaita icons, qt6ct
         ├── spicetify.nix              # Spotify theming via spicetify-nix (Comfy/catppuccin-mocha)
         ├── firefox.nix                # Firefox: profile, settings, NUR extensions, pywalfox
@@ -154,21 +153,41 @@ Noctalia is exposed as `packages.myNoctalia` from `inputs.noctalia.packages.*`. 
 referenced by name inside niri's `spawn-at-startup` configuration.
 
 An activation script in `modules/features/niri.nix` writes a processed copy of the generated
-`niri-config.kdl` to `~/.config/niri/config.kdl` so noctalia's keybind-cheatsheet plugin can read
-it (the raw KDL uses quoted identifiers that its parser does not understand).
+`niri-config.kdl` to `~/.config/niri/config.kdl` so tools that read the user config can parse it
+(the raw KDL uses quoted identifiers that most parsers do not understand).
+
+Noctalia is driven from niri keybinds through its CLI: `noctalia msg <command>` (v5) — for example
+`msg panel-toggle launcher`, `msg settings-toggle`, `msg window-switcher`, `msg lock`.
 
 ### Noctalia theming
 
 Noctalia centrally themes most apps via its template system. Active templates are listed in
-`modules/features/noctalia/settings.json` under `activeTemplates`. The following apps pick up their
-color scheme from noctalia automatically:
+`modules/features/noctalia/config.toml` under `[theme.templates]`: `builtin_ids` for templates
+shipped with noctalia, `community_ids` for ones fetched from the community catalog and cached in
+`~/.local/state/noctalia/community-templates`. Run `noctalia theme --list-templates` to see both
+catalogs.
 
-- **Alacritty** — template writes `~/.config/alacritty/alacritty.toml` colors
-- **GTK 3** — adw-gtk3-dark theme + noctalia syncGsettings
-- **Vesktop (Discord)** — theme injected via Vesktop's theme loader (manual one-time setup)
-- **Spotify** — baked at build time via spicetify-nix (Comfy theme, catppuccin-mocha scheme)
+The palette itself comes from the wallpaper (`[theme] source = "wallpaper"`, `mode = "dark"`), so
+changing the wallpaper re-renders every active template. Apps that follow automatically:
 
-Other theming is done through plugins or custom themes (vscodium, helix, ...)
+- **Alacritty** — writes `~/.config/alacritty/themes/noctalia.toml`
+- **GTK 3 / GTK 4** — adw-gtk3-dark theme + the gtk3/gtk4 templates
+- **Qt / btop / niri** — built-in templates
+- **Helix** — built-in template writes `~/.config/helix/themes/noctalia.toml` (`programs.helix`
+  selects it by name)
+- **Vesktop** — the `discord` community template writes `~/.config/vesktop/themes/noctalia.theme.css`
+  (enable it once in Vesktop's Themes pane)
+- **Obsidian** — the `obsidian` community template writes a `noctalia` CSS snippet into each vault
+- **Firefox** — the `pywalfox` community template writes `~/.cache/wal/colors.json` and runs
+  `pywalfox update`
+
+Not wallpaper-driven:
+
+- **Spotify** — spicetify-nix bakes `colors.css` into the read-only store at build time, so the
+  `spicetify` community template's output in `~/.config/spicetify/` is never read. Change
+  `colorScheme` in `home/log_s/spicetify.nix` and rebuild instead.
+- **VSCodium** — themed by extension (Catppuccin)
+
 
 ### Flake inputs
 
@@ -179,7 +198,7 @@ Other theming is done through plugins or custom themes (vscodium, helix, ...)
 | `import-tree` | Auto-loads all `.nix` files under `modules/` |
 | `wrapper-modules` | Builds niri with settings baked in at compile time |
 | `home-manager` | User-level dotfile management |
-| `noctalia` | Official noctalia shell flake (binary cache: noctalia.cachix.org) |
+| `noctalia` | Official noctalia v5 shell flake (binary cache: noctalia.cachix.org; nixpkgs deliberately not followed so cache hits are preserved) |
 | `spicetify-nix` | Spotify theming (patches Spotify at build time) |
 | `nur` | Nix User Repository — used for Firefox extensions (rycee's firefox-addons) |
 | `nix-vscode-extensions` | Full Open VSX + VS Code Marketplace mirror for VSCode extensions |

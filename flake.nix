@@ -12,10 +12,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # v5 lives in a new repo (noctalia-shell was v4). nixpkgs is deliberately
+    # NOT followed here: the noctalia.cachix.org substituter only has binaries
+    # for the upstream input, and overriding nixpkgs changes the derivation
+    # hash, which would force a local build of the whole C++/GL shell.
+    noctalia.url = "github:noctalia-dev/noctalia";
 
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";

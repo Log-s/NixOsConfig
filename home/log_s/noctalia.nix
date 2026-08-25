@@ -1,11 +1,14 @@
 { inputs, pkgs, ... }: {
-  programs.noctalia-shell = {
+  programs.noctalia = {
     enable = true;
     # Pin to the same store path niri uses for spawn-at-startup so there
     # is only one noctalia derivation in the closure.
     package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    settings = builtins.fromJSON (builtins.readFile ../../modules/features/noctalia/settings.json);
-    plugins  = builtins.fromJSON (builtins.readFile ../../modules/features/noctalia/plugins.json);
+
+    # v5 is configured with a single TOML file (v4's settings.json + plugins.json
+    # are gone). Passing the path directly keeps the comments in that file; the
+    # module still runs `noctalia config validate` on it at build time.
+    settings = ../../modules/features/noctalia/config.toml;
   };
 
   # Deploy wallpaper into the directory noctalia watches.
