@@ -70,7 +70,7 @@
       zsh
 
       # Editors
-      vim neovim
+      vim
 
       # Languages & runtimes
       # (the default JDK comes from programs.java below, so it isn't listed

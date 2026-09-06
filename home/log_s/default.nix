@@ -13,7 +13,6 @@
     ./firefox.nix
     ./vscodium.nix
     ./helix.nix
-    ./nvim.nix
     ./xdg.nix
     ./git.nix
     ./kanshi.nix

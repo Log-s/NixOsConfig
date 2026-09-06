@@ -109,8 +109,6 @@ sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
         ├── firefox.nix                # Firefox: profile, settings, NUR extensions, pywalfox
         ├── vscodium.nix               # VSCodium: Catppuccin theme, semgrep, ms-python, copy-with-line-numbers (Open VSX)
         ├── helix.nix                  # Helix: noctalia_dracula custom theme (Dracula palette)
-        ├── nvim.nix                   # Neovim: deploys init.lua + lua/ config (lazy.nvim manages plugins)
-        ├── nvim/                      # Neovim config source (init.lua + lua/ tree)
         ├── git.nix                    # Git: user identity, defaultBranch=main, pull.rebase
         ├── kanshi.nix                 # Kanshi: output profiles
         ├── ssh.nix                    # SSH: GitHub match-block (git@github.com → id_ed25519)
