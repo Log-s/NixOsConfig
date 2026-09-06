@@ -5,6 +5,7 @@
       self.nixosModules.mainHardware
       self.nixosModules.niri
       self.nixosModules.packages
+      self.nixosModules.claude
       self.nixosModules.shell
       self.nixosModules.libvirt
       self.nixosModules.hosts

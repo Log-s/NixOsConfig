@@ -87,6 +87,7 @@ sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
 │   │   ├── niri.nix                   # Niri WM: custom build, keybinds, activation script
 │   │   ├── noctalia.nix               # Exposes packages.myNoctalia from the official flake
 │   │   ├── packages.nix               # System packages, Docker/Podman, fonts, XDG portal
+│   │   ├── claude.nix                 # Claude Code: system-wide rtk hook (/etc/claude-code/managed-settings.json)
 │   │   ├── shell.nix                  # System-level zsh (registers it in /etc/shells)
 │   │   ├── libvirt.nix                # KVM/QEMU: libvirtd, virt-manager, nat-net + host-only networks
 │   │   └── noctalia/
@@ -114,6 +115,7 @@ sudo nixos-rebuild switch --flake .#main # remove entries from boot menu
         ├── kanshi.nix                 # Kanshi: output profiles
         ├── ssh.nix                    # SSH: GitHub match-block (git@github.com → id_ed25519)
         ├── tools.nix                  # Git-clones pentesting tools + pipx installs into ~/Tools/
+        ├── claude.nix                 # Claude Code: generates ~/.claude/RTK.md via `rtk init --no-patch`
         └── xdg.nix                    # XDG user dirs, home cleanup, caido desktop entry fix
 ```
 

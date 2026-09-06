@@ -9,6 +9,7 @@
     ./gtk.nix
     ./spicetify.nix
     ./tools.nix
+    ./claude.nix
     ./firefox.nix
     ./vscodium.nix
     ./helix.nix
