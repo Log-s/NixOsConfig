@@ -1,4 +1,46 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, ... }: let
+  # MCP server exposing a running Caido instance (proxy history, HTTPQL
+  # filtering, Replay, scope, findings) to Claude Code. Not in nixpkgs, and
+  # not affiliated with Caido — pinned to a tagged release so an upstream
+  # force-push can't change what gets built.
+  caido-mcp-server = pkgs.buildGoModule rec {
+    pname   = "caido-mcp-server";
+    version = "1.1.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "c0tton-fluff";
+      repo  = "caido-mcp-server";
+      rev   = "v${version}";
+      hash  = "sha256-ukhF+kpSdYk0ubhICViBNbVS7NYy06NPwx1E6atOelI=";
+    };
+    vendorHash = "sha256-P7DVwI+9aj6EFtEWoFKKBVm8XlS18+wFyJew+rcoPi0=";
+    meta.mainProgram = "caido-mcp-server";
+  };
+
+  # Kept out of the activation snippet itself so $DRY_RUN_CMD can gate the
+  # whole merge — a redirection written inline would truncate the file even
+  # on a dry run.
+  registerCaidoMcp = pkgs.writeShellScript "register-caido-mcp" ''
+    set -euo pipefail
+    config="$HOME/.claude.json"
+    [ -s "$config" ] || echo '{}' > "$config"
+    tmp=$(mktemp "$config.XXXXXX")
+    trap 'rm -f "$tmp"' EXIT
+    ${lib.getExe pkgs.jq} --argjson entry ${lib.escapeShellArg (builtins.toJSON {
+      type    = "stdio";
+      command = "${caido-mcp-server}/bin/caido-mcp-server";
+      args    = [ "serve" ];
+      env.CAIDO_URL = caidoUrl;
+    })} '.mcpServers.caido = $entry' "$config" > "$tmp"
+    mv "$tmp" "$config"
+  '';
+
+  # Caido's default listener; it serves both the UI/GraphQL API and the proxy
+  # on this port, which is also burpsuite's default — only one of the two can
+  # be up at a time.
+  caidoUrl = "http://127.0.0.1:8080";
+in {
+  home.packages = [ caido-mcp-server ];
+
   # The rtk Bash hook itself is installed system-wide in
   # modules/features/claude.nix; this only adds the user-facing half of
   # `rtk init`: ~/.claude/RTK.md, which documents the few meta-commands the
@@ -12,5 +54,24 @@
   # reference is appended without touching anything already in the file.
   home.activation.rtkInstructions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD ${lib.getExe pkgs.rtk} init -g --no-patch > /dev/null
+  '';
+
+  # Register the Caido MCP server at user scope. ~/.claude.json is a live
+  # file Claude Code rewrites constantly (history, project state, onboarding
+  # flags), so it can't be a home.file symlink — this merges the one key in
+  # with jq and leaves the rest of the file untouched. Rerunning it only
+  # rewrites the store path, so it converges on every switch.
+  #
+  # /etc/claude-code/managed-mcp.json would be the more declarative home for
+  # this, but that file takes *exclusive* control of MCP servers: dropping it
+  # in would silently suppress every server configured in ~/.claude.json and
+  # .mcp.json, including burp.
+  #
+  # Authentication is deliberately left out: `caido-mcp-server login` performs
+  # an OAuth round-trip against a running Caido instance that needs a click in
+  # the browser, and drops the resulting token in ~/.caido-mcp/token.json.
+  # Run it once by hand, and again whenever the refresh token expires.
+  home.activation.caidoMcpServer = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD ${registerCaidoMcp}
   '';
 }
