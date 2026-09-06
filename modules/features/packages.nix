@@ -51,6 +51,7 @@
       vim neovim
 
       # Languages & runtimes
+      # (the JDK itself comes from programs.java below, so it isn't listed here)
       go ruby
       rustup rust-analyzer
       python3 python313Packages.ruff basedpyright
@@ -95,7 +96,27 @@
       linux-wifi-hotspot
       pipx
       zenity
+      openssl
     ];
+
+    # Java: Temurin (prebuilt OpenJDK) rather than pkgs.jdk. programs.java
+    # installs the package *and* exports JAVA_HOME via the jdk setup-hook,
+    # which pkgs.jdk in systemPackages alone would not do.
+    # binfmt registers handlers so `./foo.jar` and `./Foo.class` are directly
+    # executable — handy for jar-shipped tools like PwnFox.jar or ysoserial.
+    programs.java = {
+      enable  = true;
+      package = pkgs.temurin-bin;   # currently JDK 21 LTS; use temurin-bin-<n> to pin
+      binfmt  = true;
+    };
+
+    # Swing/AWT ships with font anti-aliasing off, which is why Java GUIs
+    # (burpsuite here — its nixpkgs wrapper is a plain `java -jar`, it sets no
+    # rendering flags of its own) look chunky. Read by every HotSpot JVM, so it
+    # applies to jars run outside the JDK above too. Trade-off: the VM prints
+    # "Picked up _JAVA_OPTIONS: ..." on stderr at every launch — switch to
+    # `on` (grey-scale AA) if `lcd` subpixel rendering fringes on a display.
+    environment.sessionVariables._JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true";
 
     # Container runtimes
     virtualisation.docker.enable = true;
