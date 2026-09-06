@@ -31,6 +31,28 @@
       ps.mkdocs-material
       mkdocs-static-i18n
     ]);
+    # JDKs available side by side. The one in programs.java below is the
+    # default `java` on PATH; every version here also gets versioned binaries
+    # (java21/java24/...) and an entry in the `use-java` switcher, both
+    # generated from this attrset — adding a version is a one-line change.
+    # 24 is EOL and gone from nixpkgs-unstable, hence the separate flake pin.
+    jdks = {
+      "21" = pkgs.temurin-bin-21;
+      "24" = inputs.nixpkgs-jdk24.legacyPackages.${pkgs.stdenv.hostPlatform.system}.temurin-bin-24;
+      "25" = pkgs.temurin-bin-25;
+    };
+    # Two JDKs in systemPackages would collide (both own bin/java, bin/javac,
+    # ...), so the non-default ones are exposed only under versioned names.
+    # The tools resolve their own JDK home through /proc/self/exe, so a plain
+    # symlink is enough — no wrapper script needed.
+    jdk-alts = pkgs.runCommand "jdk-alts" { } (''
+      mkdir -p $out/bin
+    '' + lib.concatStrings (lib.mapAttrsToList (ver: jdk: ''
+      for b in java javac jar jshell javap keytool jcmd; do
+        if [ -e ${jdk}/bin/$b ]; then ln -s ${jdk}/bin/$b $out/bin/''${b}${ver}; fi
+      done
+    '') jdks));
+
   in {
     nixpkgs.config.allowUnfree = true;
 
@@ -51,7 +73,9 @@
       vim neovim
 
       # Languages & runtimes
-      # (the JDK itself comes from programs.java below, so it isn't listed here)
+      # (the default JDK comes from programs.java below, so it isn't listed
+      # here; jdk-alts adds the versioned java21/java24/java25 binaries)
+      jdk-alts
       go ruby
       rustup rust-analyzer
       python3 python313Packages.ruff basedpyright
@@ -106,9 +130,36 @@
     # executable — handy for jar-shipped tools like PwnFox.jar or ysoserial.
     programs.java = {
       enable  = true;
-      package = pkgs.temurin-bin;   # currently JDK 21 LTS; use temurin-bin-<n> to pin
+      package = jdks."21";   # the default `java`; change to another key of jdks
       binfmt  = true;
     };
+
+    # Per-shell JDK switcher: `use-java 24` points JAVA_HOME at that JDK and
+    # puts its bin first on PATH, so build tools (maven, gradle) follow along
+    # for the rest of the session. Lives here rather than in the home-manager
+    # zsh config so it stays next to the jdks attrset it is generated from —
+    # NixOS writes this to /etc/zshrc, which zsh sources before ~/.zshrc.
+    programs.zsh.interactiveShellInit = ''
+      use-java() {
+        local root
+        case "$1" in
+        ${lib.concatStringsSep "\n  "
+            (lib.mapAttrsToList (ver: jdk: "${ver}) root=${jdk} ;;") jdks)}
+        *)
+          echo "usage: use-java ${lib.concatStringsSep "|" (builtins.attrNames jdks)}" >&2
+          return 1
+          ;;
+        esac
+        # drop a previously selected JDK so repeated calls don't stack up PATH
+        # (the path array is zsh's tied view of PATH, so this rewrites both)
+        [ -n "$JAVA_HOME" ] && path=("''${(@)path:#$JAVA_HOME/bin}")
+        export JAVA_HOME="$root"
+        path=("$JAVA_HOME/bin" $path)
+        java -version
+      }
+      (( $+functions[compdef] )) && \
+        compdef '_values "jdk version" ${lib.concatStringsSep " " (builtins.attrNames jdks)}' use-java
+    '';
 
     # Swing/AWT ships with font anti-aliasing off, which is why Java GUIs
     # (burpsuite here — its nixpkgs wrapper is a plain `java -jar`, it sets no

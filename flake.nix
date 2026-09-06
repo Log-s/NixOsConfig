@@ -2,6 +2,11 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # JDK 24 is EOL and was removed from nixos-unstable (2025-10-04), so it is
+    # pulled from the last release branch that still packages it. Deliberately
+    # not `follows`-ing nixpkgs — the whole point of this input is the old pin.
+    nixpkgs-jdk24.url = "github:nixos/nixpkgs/nixos-25.05";
+
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
 
